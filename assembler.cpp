@@ -1,11 +1,7 @@
-#include <iostream>
-#include <sstream>
-#include <unordered_map>
-#include <vector>
-#include <iomanip>
+#include<bits/stdtr1c++.h>
 using namespace std;
 
-// Register mapping
+// Registers
 unordered_map<string, int> registers = {
     {"A", 0b000},
     {"B", 0b001},
@@ -14,7 +10,7 @@ unordered_map<string, int> registers = {
     {"E", 0b100}
 };
 
-// Opcodes mapping
+// Opcodes 
 unordered_map<string, int> opcodes = {
     {"ADD", 0b00},
     {"MOVE", 0b01},
@@ -26,7 +22,7 @@ unordered_map<string, int> opcodes = {
     {"JPN", 0b10000011}
 };
 
-// Helper function to convert int to hex
+//  convert int to hex
 string intToHex(int value, int width = 2) {
     stringstream ss;
     ss << setfill('0') << setw(width) << hex << value;
@@ -40,10 +36,10 @@ vector<string> parseCommand(const string &command) {
     string token;
 
     while (stream >> token) {
-        // Find and handle commas
+        
         size_t commaPos = token.find(',');
         if (commaPos != string::npos) {
-            // Split around the comma
+           
             tokens.push_back(token.substr(0, commaPos)); // Before the comma
             tokens.push_back(token.substr(commaPos + 1)); // After the comma
         } else {
@@ -54,7 +50,7 @@ vector<string> parseCommand(const string &command) {
 }
 
 
-// Function to process ADD, MOVE, STORE, LOAD, and JMP instructions
+
 string processInstruction(const vector<string>& tokens) {
     if (tokens.empty()) return "Invalid command format";
 
@@ -75,18 +71,18 @@ string processInstruction(const vector<string>& tokens) {
         int destRegCode = registers[destReg];
         int instrCode;
 
-        // ADD/MOVE with register
+     
         if (registers.find(srcOrVal) != registers.end()) {
             int srcRegCode = registers[srcOrVal];
             instrCode = (opcode << 6) | (destRegCode << 3) | srcRegCode;
             return intToHex(instrCode);
         } else { // ADD/MOVE with immediate value
             try {
-                int value = stoi(srcOrVal); // Convert the string to an integer
-                if (value < 0 || value > 255) return "Value out of range"; // Limit to 8-bit values
+                int value = stoi(srcOrVal); 
+                if (value < 0 || value > 255) return "Value out of range"; 
 
-                instrCode = (opcode << 6) | (destRegCode << 3) | 0b101; // Use '101' as per spec to indicate a constant
-                return intToHex(instrCode) + " " + intToHex(value); // Instruction and value in hex
+                instrCode = (opcode << 6) | (destRegCode << 3) | 0b101; 
+                return intToHex(instrCode) + " " + intToHex(value);
             } catch (const invalid_argument& e) {
                 return "Invalid value format";
             }
@@ -105,7 +101,6 @@ string processInstruction(const vector<string>& tokens) {
 
         int instrCode = (opcode << 6) | (0b110 << 3) | regCode;
 
-        // Convert address to two bytes (16-bit address split)
         int addrLSB = address & 0xFF;
         int addrMSB = (address >> 8) & 0xFF;
 
@@ -119,7 +114,7 @@ string processInstruction(const vector<string>& tokens) {
 
         int instrCode = opcode;
 
-        // Convert address to two bytes (16-bit address split)
+        // Convert address to two bytes 
         int addrLSB = address & 0xFF;
         int addrMSB = (address >> 8) & 0xFF;
 
