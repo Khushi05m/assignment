@@ -1,12 +1,7 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <unordered_map>
-#include <iomanip>
-#include <vector>
+#include<bits/stdtr1c++.h>
 using namespace std;
 
-// Opcodes mapping (reverse)
+// Opcodes mapping 
 unordered_map<int, string> opcodeToInstruction = {
     {0b00, "ADD"},
     {0b01, "MOVE"},
@@ -16,7 +11,7 @@ unordered_map<int, string> opcodeToInstruction = {
     {0b10000011, "JPN"}
 };
 
-// Register mapping (reverse)
+// Register mapping 
 unordered_map<int, string> regToName = {
     {0b000, "A"},
     {0b001, "B"},
@@ -25,7 +20,7 @@ unordered_map<int, string> regToName = {
     {0b100, "E"}
 };
 
-// Helper function to convert hex string to int
+//  convert hex string to int
 int hexToInt(const string& hexStr) {
     int value;
     stringstream ss;
@@ -34,7 +29,7 @@ int hexToInt(const string& hexStr) {
     return value;
 }
 
-// Helper function to reverse the endianness of a string
+//  reverse the endianness of a string
 string reverseEndian(const string& hexStr) {
     string reversedHex;
     for (int i = hexStr.length() - 2; i >= 0; i -= 2) {
@@ -43,7 +38,7 @@ string reverseEndian(const string& hexStr) {
     return reversedHex;
 }
 
-// Function to decode a single hexadecimal instruction back to assembly
+//  decode a single hexadecimal instruction back to assembly
 string decodeInstruction(const string& hexStr, bool littleEndian) {
     string finalHexStr = littleEndian ? reverseEndian(hexStr) : hexStr;
 
@@ -51,16 +46,16 @@ string decodeInstruction(const string& hexStr, bool littleEndian) {
         return "Invalid input";
     }
 
-    // Convert the first two characters of the hex string to the instruction word
+    // Convert first two characters of the hex string to the instruction word
     int instructionWord = hexToInt(finalHexStr.substr(0, 2));
 
-    // Check if the opcode matches JMP or other jump-related instructions
+    
     if (instructionWord >= 0x80) {
         int opcode = instructionWord;
         
         if (opcode == 0b10000000) { // JMP
             if (finalHexStr.length() >= 6) {
-                int addr = hexToInt(finalHexStr.substr(2, 4)); // Extract the address
+                int addr = hexToInt(finalHexStr.substr(2, 4)); 
                 return "JMP " + to_string(addr);
             } else {
                 return "Incomplete input for JMP";
@@ -91,7 +86,7 @@ string decodeInstruction(const string& hexStr, bool littleEndian) {
         }
     }
 
-    // Decode based on other instructions like ADD and MOVE
+    
     int opcode = (instructionWord >> 6) & 0b11;
     if (opcodeToInstruction.find(opcode) == opcodeToInstruction.end()) {
         return "Unknown opcode";
@@ -106,11 +101,11 @@ string decodeInstruction(const string& hexStr, bool littleEndian) {
         if (regToName.find(destReg) == regToName.end()) return "Unknown destination register";
         string destRegStr = regToName[destReg];
 
-        // Check if there is an immediate value (extension word) or a register
-        if (finalHexStr.length() == 6) { // Immediate value is present (e.g., 01A50A)
+        
+        if (finalHexStr.length() == 6) { 
             int value = hexToInt(finalHexStr.substr(4, 2));
             return instruction + " " + destRegStr + ", " + to_string(value);
-        } else if (regToName.find(srcOrVal) != regToName.end()) { // Source is a register
+        } else if (regToName.find(srcOrVal) != regToName.end()) { 
             return instruction + " " + destRegStr + ", " + regToName[srcOrVal];
         } else {
             return "Unknown source register or value";
@@ -120,7 +115,7 @@ string decodeInstruction(const string& hexStr, bool littleEndian) {
     return "Unknown error";
 }
 
-// Function to process multiple hexadecimal commands and decode them
+
 vector<string> processCommands(const vector<string>& hexCommands, bool littleEndian) {
     vector<string> results;
     for (size_t i = 0; i < hexCommands.size(); i++) {
@@ -131,7 +126,6 @@ vector<string> processCommands(const vector<string>& hexCommands, bool littleEnd
     return results;
 }
 
-// Function to read input from a file
 vector<string> readHexFromFile(const string& filename) {
     ifstream file(filename);
     vector<string> hexCommands;
@@ -194,7 +188,7 @@ int main() {
     vector<string> results = processCommands(hexCommands, littleEndian);
 
     if (fromFile) {
-        // Write results to output file
+        
         writeAssemblyToFile(outputFile, results);
         cout << "Results written to " << outputFile << endl;
     } else {
