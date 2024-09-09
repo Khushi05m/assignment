@@ -1,0 +1,37 @@
+ADD A, 10
+JMP 1000
+ADD A, 0
+ADD A, 1
+Invalid input
+Unknown source register or value
+Invalid input
+Unknown source register or value
+Invalid input
+ADD B, B
+ADD A, 4
+ADD A, 15
+ADD A, 255
+ADD A, 1
+ADD A, 10
+JPP 1200
+ADD A, 15
+JPZ 1440
+JPN 722
+ADD A, 255
+ADD A, 10
+JMP 1440
+Invalid input
+ADD A, A
+JPP 2000
+ADD A, 4
+ADD A, 5
+ADD A, 2
+Invalid input
+ADD A, A
+ADD A, 255
+JPP 1000
+ADD A, B
+Invalid input
+ADD A, 9
+JPZ 3
+JMP 4095
